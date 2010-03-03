@@ -1,0 +1,29 @@
+Intro
+=====
+
+This is a lyrics scroller we built at zyozy for one of our projects.
+
+It's got bookmarks, which are essentially logical times in the song for the scroller to scroll so that it's easy to sing along with.
+
+Implement it using the simple options hash below; for more info, clone the repo or browse the files for some (rudimentary right now) documentation.
+
+---------
+
+Options & Install
+=================
+
+**Options:**
+
+    options: {
+        songLength: "3:00",         // the length of the song in m:ss format.
+        bookmarks: [],              // an array of times, corresponding to your paragraphs (see line #154 in lyrics.html)
+        playBtn: "lyrics-play",     // HTML ID of play button element
+        lyricsDiv: "scroll",        // lyrics div
+        flashId: "SoundPlayer",     // HTML ID of flash element
+        autoPlay: false,            // set to true for autoplay!
+        timeDisplay: "lyrics-time", // HTML ID of time display
+        scrollDuration: 2000        // duration of scrolling animation
+    }
+    
+
+    

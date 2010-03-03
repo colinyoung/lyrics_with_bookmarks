@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lyrics Scroller</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+    <script type="text/javascript" src="mootools-1.2.4.4-more.js"></script>
+    <link rel="stylesheet" href="style.css" media="screen,projection" />
+    <script type="text/javascript">
+      var LyricsWidget = new Class({
+          Implements: Options,
+          options: {
+              songLength: "3:00",
+              bookmarks: [],
+              playBtn: "lyrics-play",
+              lyricsDiv: "scroll",
+              flashId: "SoundPlayer",
+              autoPlay: false,
+              timeDisplay: "lyrics-time",
+              scrollDuration: 2000
+          },
+          initialize: function(options) {
+              LW = this;
+
+              // set the options, usual part of any mootools class          
+              this.setOptions(options);
+              
+              this.isPlaying = false;
+              
+              this.counter = 0;
+              
+              this.paragraph = 0;
+              
+              this.timer = {};
+
+              this.flashObject = $(this.options.flashId);
+
+              this.songLengthInMs = this.toMs(this.options.songLength);
+              
+              this.scroller = new Fx.Scroll($(this.options.lyricsDiv), {duration: this.options.scrollDuration});  //{duration:this.songLengthInMs});
+              
+              this.bookmarks = [];
+
+              $each(this.options.bookmarks, function(i) {
+                LW.bookmarks.push(LW.toMs(i)-LW.options.scrollDuration);
+              });
+              
+              if (this.options.autoPlay) {
+                LW.play();  
+              }                            
+              $(this.options.playBtn).addEvent("click", function() {
+                LW.toggle();
+              });
+          },
+          toMs: function(timeString) {
+              var reg = /^([0-9]{1,2}):([0-9]{2})$/;
+              var time = reg.exec(timeString);
+              if (!$chk(time[0]))
+                return false;     
+              // convert those minutes to those millilililililililiseconds
+              var minutes = parseInt(time[1]);              
+              var seconds = parseInt(time[2]);
+     
+              var milliseconds = ((minutes * 60) + seconds) * 1000;
+              return milliseconds;
+          },
+          play: function() {
+            if (this.counter == 0) {
+              // first play
+              this.scroller.toTop();
+            }
+            LW.changePlayButtonText("Pause");
+            this.flashObject.flashPlay();            
+            this.isPlaying = true;
+            this.counter = this.flashObject.flashPosition();
+            $(this.options.timeDisplay).setStyle('textDecoration',"none");
+            $(LW.options.timeDisplay).set("text", LW.toTime(LW.counter));            
+
+            this.timer = (function() { 
+              LW.counter += 1000;
+              
+              LW.checkBookmark(LW.counter);
+              $(LW.options.timeDisplay).set("text", LW.toTime(LW.counter));
+            }).periodical(1000);
+          },
+          pause: function() {
+            LW.changePlayButtonText("Play");
+            this.flashObject.flashPause();
+            this.isPlaying = false;
+            this.counter = this.flashObject.flashPosition();
+            $clear(this.timer);
+           $(this.options.timeDisplay).setStyle('textDecoration',"blink");
+          },
+          toggle: function() {
+            if (this.isPlaying)
+              LW.pause();
+            else
+              LW.play();
+          },
+          changePlayButtonText: function(string) {
+            $(this.options.playBtn).set('text', string);
+          },
+          flashCmd: function(string) {
+            sendCommand(string);
+          },
+          checkBookmark: function(time) {
+            if (this.bookmarks.contains(time)) {
+              this.scrollToNextParagraph();
+            }
+          },
+          scrollToNextParagraph: function() {            
+           this.scroller.toElement( 
+
+              $(this.options.lyricsDiv).getChildren("p")[this.paragraph+1] );
+            this.paragraph++;
+          },
+          toTime: function(ms) {
+            //ms+=1000;
+            var seconds = ms/1000;
+            var minutes = seconds / 60;
+            
+            // round to floor minute
+            minutes = Math.floor(minutes);
+            
+            // remainder is the num seconds
+            var remainder = seconds-(minutes*60);
+            
+            // pad for < 10 seconds.
+            // the closure below converts the int from above ^ 
+            // into a string so that length can be discovered.
+            if ((remainder + "").length == 1)
+              remainder = "0" + remainder;
+
+            return minutes + ":" + remainder;
+          }
+      });
+      
+    window.addEvent("domready", function() {
+      var mov = new Swiff('LyricsWithBookmarks.swf', {
+          id: 'SoundPlayer',
+          width: 5,
+          height: 5,
+          params: {
+              wmode: 'transparent',
+              bgcolor: '#ffffff',
+              allowScripts: true
+          }
+      });
+      $("flash").adopt(mov);
+    });
+    function flashReady() {
+      window.addEvent("domready", function() {
+        var a = new LyricsWidget({
+          songLength: "4:26",
+          bookmarks: ["0:14", "0:39", "1:16", "1:42", "2:15", "2:54", "3:21"]
+        });        
+      });
+    }
+    </script>
+  </head>
+  <body>
+    <p style="color:white" id="lyrics-time">0:00</p>
+    <div id="lyrics" class="lyrics">
+      <div class="controls">
+        <ul>
+          <li class="left"><a id="lyrics-play" href="javascript:;">Play</a></li>
+          <li class="right"><a href="/files/music.pdf">Download Music</a></li>
+        </ul>
+      </div>
+      <div id="scroll">
+<p class="title">        
+      <span class="title">BRIGHTER WAY</span><br />
+      <span class="byline">Words and music by Amy Carol Wolff</span>
+</p>
+<p>  
+      To those who see the widowed<br />
+      The infected and abused<br />
+      To those who hear them asking for deliverance<br />
+      To those who are angered<br />
+      By the failed attempts at progress<br />
+      And are inspired to give the forgotten their voice<br />
+</p>
+<p>  
+      Show them there&rsquo;s a brighter way<br />
+      A rushing river gaining ground<br />
+      Bringing life and hope abound<br />
+      A brighter love,<br />
+      One that reaches deep enough<br />
+      To see their pain and lift them up in grace<br />
+      This is purpose<br />
+      For this we sing.<br />
+</p>
+<p>  
+      We must join together<br />
+      Hear the cries of the hopeful<br />
+      Who know there is power in our passion<br />
+      Committing to this calling<br />
+      To be one in our mission, empowering with life<br />
+</p>
+<p>  
+      Show them there&rsquo;s a brighter way<br />
+      A rushing river gaining ground<br />
+      Bringing life and hope abound<br />
+      A brighter love,<br />
+      One that reaches deep enough<br />
+      To see their pain and lift them up in grace<br />
+      This is purpose<br />
+      For this we sing.<br />
+</p>
+<p>  
+      This is our noble battle,<br />
+      Our adventure finding beauty,<br />
+      In the eyes of a child, in the callused hands of poverty<br />
+      We will not settle for signed paper contracts<br />
+      We will move, inspiring others to believe<br />
+      Show them there&rsquo;s a brighter way<br />
+      A brighter love, oh<br />
+</p>
+
+<p>      
+      Show them there&rsquo;s a brighter way<br />
+      A rushing river gaining ground<br />
+      Bringing life and hope abound<br />
+      A brighter love,<br />
+      One that reaches deep enough<br />
+      To see their pain and lift them up in grace<br />
+      This is purpose<br />
+      For this we sing.<br />
+      For this we sing.<br />
+      For those who see
+</p>
+
+      <p class="footer">&copy; zyOzy Foundation, 2009</p>
+      </div><!-- // scroll -->
+    </div>
+    <div id="flash">
+    </div>
+  </body>
+</html>

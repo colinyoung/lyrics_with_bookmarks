@@ -1,0 +1,90 @@
+ body {
+    background: black;
+  }
+  .lyrics {
+    font: 13pt/18pt helvetica, arial, sans-serif;
+    color: #ccc;
+    background: #333;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-box-shadow: 0px 0px -4px #000;
+    -webkit-box-shadow: 0px 0px 4px #000;      
+    border: 4px solid #ccc;
+    width: 350px;
+    text-shadow: 0 1px 1px #000;
+    position: relative;
+  }
+  #scroll {
+    padding: 10px 10px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 400px;
+    margin-top: 40px;
+    display: block;
+  }
+  .footer {
+    color: #888;
+  }
+  .lyrics p {
+    padding-top: 10px;
+  }
+  .lyrics p:first-line {
+    text-indent: 1em;
+  }
+  p.title {
+    margin-top: 5px;
+    line-height: 150%;
+  }
+  span.title {
+    font-size: 18pt;
+    font-weight: bold;      
+    color: white;
+  }
+  span.byline {
+    font-size: 16pt;
+    font-weight: bold;
+    color: #888;
+  }
+  .controls {
+    overflow: hidden;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    -moz-border-radius: 10px;         
+    border-bottom: 2px solid #222;
+    width: 350px;
+    height: 40px;
+    background: white;      
+     -webkit-border-top-right-radius: 5px;      
+    -webkit-border-top-left-radius: 5px;         
+  }
+  .controls ul {
+    padding: 0;
+    margin: 0;
+  }
+  .controls li {    
+    list-style: none;
+    margin-right: 1em;
+    display: inline;
+  }      
+  .controls li a {
+    color: #888;
+    text-shadow: 1px 1px 0px #333;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12pt;
+    padding: 6px 10px;
+    text-transform: uppercase;         
+  } 
+  .controls li a:hover {
+    color: #222;
+  }    
+  .controls li.left {
+    float: left;
+    border-right: 1px dotted #ccc;
+  }
+  .controls li.right {
+    float: right;
+    border-left: 1px dotted #ccc;      
+   
+  }
